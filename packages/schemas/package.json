@@ -1,0 +1,48 @@
+{
+  "name": "@sivium/timescale-db-schemas",
+  "version": "0.0.22",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.js"
+    }
+  },
+  "homepage": "https://github.com/SiviumSolutions/timescaledb-ts",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/SiviumSolutions/timescaledb-ts.git"
+  },
+  "keywords": [
+    "timescaledb",
+    "timeseries",
+    "database",
+    "typescript",
+    "schemas",
+    "zod",
+    "types"
+  ],
+  "author": "Timescale",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/SiviumSolutions/timescaledb-ts/issues"
+  },
+  "typesVersions": {
+    "*": {
+      "*": [
+        "src/*"
+      ]
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc"
+  },
+  "dependencies": {
+    "zod": "^3.24.1"
+  }
+}

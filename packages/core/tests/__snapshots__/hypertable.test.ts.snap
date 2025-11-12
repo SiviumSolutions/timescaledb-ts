@@ -1,0 +1,69 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Hypertable SQL Escaping should properly escape column names with special characters 1`] = `"SELECT create_hypertable('my_table', by_range('time-stamp"field'));"`;
+
+exports[`Hypertable SQL Escaping should properly escape compression fields with special characters 1`] = `
+"SELECT create_hypertable('my_table', by_range('time'));
+ALTER TABLE "my_table" SET (
+        timescaledb.compress,
+        timescaledb.compress_orderby = "timestamp""field",
+        timescaledb.compress_segmentby = "user-agent""field"
+      );"
+`;
+
+exports[`Hypertable SQL Escaping should properly escape interval values with special characters 1`] = `
+"SELECT create_hypertable('my_table', by_range('time'));
+ALTER TABLE "my_table" SET (
+        timescaledb.compress,
+        timescaledb.compress_orderby = "time",
+        timescaledb.compress_segmentby = "user_agent"
+      );
+SELECT add_compression_policy('my_table', INTERVAL '7 days''--injection');"
+`;
+
+exports[`Hypertable down should drop a hypertable 1`] = `"SELECT drop_chunks('my_table', NOW()::timestamp without time zone);"`;
+
+exports[`Hypertable down should drop a hypertable with compression 1`] = `
+"ALTER TABLE "my_table" SET (timescaledb.compress = false);
+SELECT drop_chunks('my_table', NOW()::timestamp without time zone);"
+`;
+
+exports[`Hypertable down should drop a hypertable with compression policy 1`] = `
+"ALTER TABLE "my_table" SET (timescaledb.compress = false);
+SELECT remove_compression_policy('my_table', if_exists => true);
+SELECT drop_chunks('my_table', NOW()::timestamp without time zone);"
+`;
+
+exports[`Hypertable inspect should inspect a hypertable 1`] = `
+"SELECT
+  EXISTS (
+    SELECT FROM information_schema.tables 
+    WHERE table_schema = 'public' 
+    AND table_name = 'my_table'
+  ) AS table_exists,
+  EXISTS (
+    SELECT FROM timescaledb_information.hypertables
+    WHERE hypertable_name = 'my_table'
+  ) AS is_hypertable"
+`;
+
+exports[`Hypertable up should create and build a hypertable 1`] = `"SELECT create_hypertable('my_table', by_range('time'));"`;
+
+exports[`Hypertable up should create and build a hypertable with compression 1`] = `
+"SELECT create_hypertable('my_table', by_range('time'));
+ALTER TABLE "my_table" SET (
+        timescaledb.compress,
+        timescaledb.compress_orderby = "time",
+        timescaledb.compress_segmentby = "user_agent"
+      );"
+`;
+
+exports[`Hypertable up should create and build a hypertable with compression policy 1`] = `
+"SELECT create_hypertable('my_table', by_range('time'));
+ALTER TABLE "my_table" SET (
+        timescaledb.compress,
+        timescaledb.compress_orderby = "time",
+        timescaledb.compress_segmentby = "user_agent"
+      );
+SELECT add_compression_policy('my_table', INTERVAL '1d');"
+`;

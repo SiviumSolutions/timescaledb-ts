@@ -1,0 +1,22 @@
+{
+  "compilerOptions": {
+    "target": "ES2020",
+    "lib": ["es2020"],
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "outDir": "./dist",
+    "esModuleInterop": true,
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "strict": true,
+    "paths": {
+      "@sivium/timescale-db-core": ["../../packages/core/dist"],
+      "@sivium/timescale-db-schemas": ["../../packages/schemas/dist"],
+      "@sivium/timescale-db-typeorm": ["../../packages/typeorm/dist"]
+    }
+  },
+  "include": ["src", "migrations"],
+  "exclude": ["node_modules", "dist"]
+}

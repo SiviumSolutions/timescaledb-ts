@@ -1,0 +1,172 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`RollupBuilder SQL Generation down() should escape special characters in view names 1`] = `
+[
+  "SELECT remove_continuous_aggregate_policy('daily"rollup.view', if_exists => true);",
+  "DROP MATERIALIZED VIEW IF EXISTS "daily""rollup.view";",
+]
+`;
+
+exports[`RollupBuilder SQL Generation down() should generate drop statements with refresh policy 1`] = `
+[
+  "SELECT remove_continuous_aggregate_policy('daily_rollup', if_exists => true);",
+  "DROP MATERIALIZED VIEW IF EXISTS "daily_rollup";",
+]
+`;
+
+exports[`RollupBuilder SQL Generation down() should generate drop statements without refresh policy 1`] = `
+[
+  "SELECT remove_continuous_aggregate_policy('daily_rollup', if_exists => true);",
+  "DROP MATERIALIZED VIEW IF EXISTS "daily_rollup";",
+]
+`;
+
+exports[`RollupBuilder SQL Generation inspect() should escape special characters in view names 1`] = `
+"
+      SELECT 
+        EXISTS (
+          SELECT FROM information_schema.views 
+          WHERE table_schema = 'public' 
+          AND table_name = 'source"view'
+        ) as source_view_exists,
+        EXISTS (
+          SELECT FROM information_schema.views 
+          WHERE table_schema = 'public' 
+          AND table_name = 'my"rollup.view'
+        ) as rollup_view_exists;
+    "
+`;
+
+exports[`RollupBuilder SQL Generation inspect() should generate inspect SQL 1`] = `
+"
+      SELECT 
+        EXISTS (
+          SELECT FROM information_schema.views 
+          WHERE table_schema = 'public' 
+          AND table_name = 'hourly_metrics'
+        ) as source_view_exists,
+        EXISTS (
+          SELECT FROM information_schema.views 
+          WHERE table_schema = 'public' 
+          AND table_name = 'daily_rollup'
+        ) as rollup_view_exists;
+    "
+`;
+
+exports[`RollupBuilder SQL Generation inspect() should handle schema qualified names 1`] = `
+"
+      SELECT 
+        EXISTS (
+          SELECT FROM information_schema.views 
+          WHERE table_schema = 'public' 
+          AND table_name = 'public.hourly_metrics'
+        ) as source_view_exists,
+        EXISTS (
+          SELECT FROM information_schema.views 
+          WHERE table_schema = 'public' 
+          AND table_name = 'public.daily_rollup'
+        ) as rollup_view_exists;
+    "
+`;
+
+exports[`RollupBuilder SQL Generation refresh policy should escape interval values in refresh policy 1`] = `
+"SELECT add_continuous_aggregate_policy('daily_rollup',
+      start_offset => INTERVAL '30 days''--injection',
+      end_offset => INTERVAL '1 day',
+      schedule_interval => INTERVAL '1 day'
+    );"
+`;
+
+exports[`RollupBuilder SQL Generation refresh policy should generate refresh policy SQL 1`] = `
+"SELECT add_continuous_aggregate_policy('daily_rollup',
+      start_offset => INTERVAL '30 days',
+      end_offset => INTERVAL '1 day',
+      schedule_interval => INTERVAL '1 day'
+    );"
+`;
+
+exports[`RollupBuilder SQL Generation up() should generate SQL with materialized-only option 1`] = `
+"CREATE MATERIALIZED VIEW "daily_rollup"
+      WITH (timescaledb.continuous) AS 
+      SELECT
+        time_bucket('1 day'::interval, "bucket") AS "bucket",
+      rollup("percentile_hourly") as "percentile_daily",
+      sum("total_hourly") as "total_daily"
+      FROM "hourly_metrics"
+      GROUP BY 1 WITH DATA;
+    "
+`;
+
+exports[`RollupBuilder SQL Generation up() should generate basic rollup SQL 1`] = `
+"CREATE MATERIALIZED VIEW "daily_rollup"
+      WITH (timescaledb.continuous) AS 
+      SELECT
+        time_bucket('1 day'::interval, "bucket") AS "bucket",
+      rollup("percentile_hourly") as "percentile_daily",
+      sum("total_hourly") as "total_daily"
+      FROM "hourly_metrics"
+      GROUP BY 1 WITH NO DATA;
+    "
+`;
+
+exports[`RollupBuilder SQL Generation up() should handle different aggregate types 1`] = `
+"CREATE MATERIALIZED VIEW "daily_rollup"
+      WITH (timescaledb.continuous) AS 
+      SELECT
+        time_bucket('1 day'::interval, "bucket") AS "bucket",
+      sum("value") as "sum_value",
+      avg("value") as "avg_value"
+      FROM "hourly_metrics"
+      GROUP BY 1 WITH NO DATA;
+    "
+`;
+
+exports[`RollupBuilder SQL Generation up() should handle different bucket columns 1`] = `
+"CREATE MATERIALIZED VIEW "daily_rollup"
+      WITH (timescaledb.continuous) AS 
+      SELECT
+        time_bucket('1 day'::interval, "custom_bucket") AS "custom_bucket",
+      rollup("percentile_hourly") as "percentile_daily",
+      sum("total_hourly") as "total_daily"
+      FROM "hourly_metrics"
+      GROUP BY 1 WITH NO DATA;
+    "
+`;
+
+exports[`RollupBuilder SQL Generation up() should handle group columns 1`] = `
+"CREATE MATERIALIZED VIEW "daily_rollup"
+      WITH (timescaledb.continuous) AS 
+      SELECT
+        time_bucket('1 day'::interval, "bucket") AS "bucket",
+      "symbol" as "symbol",
+      "exchange" as "exchange",
+      rollup("percentile_hourly") as "percentile_daily",
+      sum("total_hourly") as "total_daily"
+      FROM "hourly_metrics"
+      GROUP BY 1, "symbol", "exchange" WITH NO DATA;
+    "
+`;
+
+exports[`RollupBuilder SQL Generation up() should handle special characters in column names 1`] = `
+"CREATE MATERIALIZED VIEW "daily_rollup"
+      WITH (timescaledb.continuous) AS 
+      SELECT
+        time_bucket('1 day'::interval, "bucket") AS "bucket",
+      rollup("percentile""hourly") as "percentile""daily"
+      FROM "hourly_metrics"
+      GROUP BY 1 WITH NO DATA;
+    "
+`;
+
+exports[`RollupBuilder SQL Generation up() should include candlestick columns 1`] = `
+"CREATE MATERIALIZED VIEW "daily_rollup"
+      WITH (timescaledb.continuous) AS 
+      SELECT
+        time_bucket('1 day'::interval, "bucket") AS "bucket",
+      rollup("candlestick") as "candlestick",
+      rollup("percentile_hourly") as "percentile_daily",
+      sum("total_hourly") as "total_daily"
+      FROM "hourly_metrics"
+      GROUP BY 1 WITH NO DATA;
+    "
+`;
