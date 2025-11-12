@@ -1,6 +1,9 @@
 {
   "name": "@sivium/timescale-db-schemas",
-  "version": "0.0.22",
+  "version": "0.0.23",
+  "publishConfig": {
+    "access": "public"
+  },
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "exports": {

@@ -1,6 +1,6 @@
 {
   "name": "@sivium/timescale-db",
-  "version": "0.0.22",
+  "version": "0.0.23",
   "packageManager": "pnpm@9.15.3",
   "scripts": {
     "lint": "eslint .",
@@ -10,6 +10,9 @@
     "format": "prettier . --write --ignore-path .prettierignore",
     "format:check": "prettier . --check --ignore-path .prettierignore",
     "release": "node ./packages/utils/dist/release.js"
+  },
+  "publishConfig": {
+    "access": "public"
   },
   "devDependencies": {
     "@babel/cli": "7.24.8",

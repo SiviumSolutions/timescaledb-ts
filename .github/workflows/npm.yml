@@ -3,18 +3,35 @@ name: Publish to npm
 on:
   push:
     tags:
-      - '*'
+      - 'v*'
 
 jobs:
   publish-npm:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+
     steps:
       - uses: actions/checkout@v4
-      - uses: ./.github/actions/setup-project
-      - run: pnpm config set //registry.npmjs.org/:_authToken ${NPM_TOKEN}
+
+      - name: Setup Node + pnpm
+        uses: ./.github/actions/setup-project
+
+      - name: Authenticate with npm
+        run: pnpm config set //registry.npmjs.org/:_authToken ${NPM_TOKEN}
         env:
-          NPM_TOKEN: ${{secrets.npm_token}}
-      - run: START_PATH="." node ./packages/utils/dist/bump-versions.js
+          NPM_TOKEN: ${{ secrets.npm_token }}
+
+      - name: Bump internal versions
+        run: START_PATH="." node ./packages/utils/dist/bump-versions.js
         env:
-          VERSION: ${{github.ref_name}}
-      - run: pnpm publish -r --filter '!@timescaledb/example-node-sequelize' --filter '!@timescaledb/example-node-typeorm' --filter '!@timescaledb/monorepo' --no-git-checks
+          VERSION: ${{ github.ref_name }}
+
+      - name: Publish
+        run: |
+          pnpm publish -r \
+            --filter '!@timescaledb/example-node-sequelize' \
+            --filter '!@timescaledb/example-node-typeorm' \
+            --filter '!@timescaledb/monorepo' \
+            --no-git-checks
