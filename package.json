@@ -1,6 +1,6 @@
 {
   "name": "@sivium/timescale-db",
-  "version": "0.0.23",
+  "version": "0.0.24",
   "packageManager": "pnpm@9.15.3",
   "scripts": {
     "lint": "eslint .",

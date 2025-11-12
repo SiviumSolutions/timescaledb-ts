@@ -9,7 +9,7 @@ exclude files regex: `pnpm-*`
 `pnpm build`
 
 `cd packages/schemas && pnpm publish --access public --no-git-checks && cd ../utils && pnpm publish --access public --no-git-checks && cd ../core && pnpm publish --access public --no-git-checks && cd ../typeorm && pnpm publish --access public --no-git-checks && cd ../../`
-VERSION={version} =0.0.23 START_PATH=$(pwd) node packages/utils/dist/bump-versions.js
+VERSION={version} =0.0.24 START_PATH=$(pwd) node packages/utils/dist/bump-versions.js
 
 <p align=center>
   <img width="80%" src="docs/images/banner-dark.png#gh-dark-mode-only" alt="pgai"/>

@@ -127,6 +127,13 @@ async function setupHypertables(dataSource: DataSource) {
     const options = Reflect.getMetadata(HYPERTABLE_METADATA_KEY, entity.target);
 
     if (options) {
+      const timeColumnMetadata = Reflect.getMetadata(TIME_COLUMN_METADATA_KEY, entity.target) as
+        | TimeColumnMetadata
+        | undefined;
+
+      if (timeColumnMetadata) {
+        options.time_column = timeColumnMetadata.columnName ?? String(timeColumnMetadata.propertyKey);
+      }
       const hypertable = TimescaleDB.createHypertable(entity.tableName, options);
       const hypertableCheck = await dataSource.query(hypertable.inspect().build());
 
