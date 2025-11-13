@@ -1,4 +1,4 @@
-import { PrimaryColumn } from 'typeorm';
+import { Column, ColumnOptions, getMetadataArgsStorage, PrimaryColumn } from 'typeorm';
 
 export const TIME_COLUMN_METADATA_KEY = Symbol('timescale:time-column');
 
@@ -7,16 +7,38 @@ export interface TimeColumnMetadata {
   columnName: string;
 }
 
-export function TimeColumn(options?: { name?: string }) {
+export interface TimeColumnOptions extends ColumnOptions {
+  primary?: boolean;
+}
+
+export function TimeColumn(options?: TimeColumnOptions) {
   return function (target: any, propertyKey: string | symbol) {
+    const isPrimary = options?.primary === true;
+
+    const baseOptions: ColumnOptions = {
+      type: 'timestamptz',
+      ...options,
+    };
+
+    if (!isPrimary && baseOptions.nullable === undefined) {
+      baseOptions.nullable = false;
+    }
+
+    const { primary, ...columnOptions } = baseOptions as TimeColumnOptions;
+
     const metadata: TimeColumnMetadata = {
       propertyKey,
-      columnName: propertyKey.toString(),
+      columnName: (options?.name as string) || propertyKey.toString(),
     };
 
     Reflect.defineMetadata(TIME_COLUMN_METADATA_KEY, metadata, target.constructor);
 
-    PrimaryColumn({ type: 'timestamp with time zone', name: options?.name })(target, propertyKey);
+    if (isPrimary) {
+      const { nullable, ...primaryOptions } = columnOptions;
+      PrimaryColumn(primaryOptions)(target, propertyKey);
+    } else {
+      Column(columnOptions)(target, propertyKey);
+    }
   };
 }
 

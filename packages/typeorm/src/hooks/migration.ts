@@ -132,8 +132,18 @@ async function setupHypertables(dataSource: DataSource) {
         | undefined;
 
       if (timeColumnMetadata) {
-        options.time_column = timeColumnMetadata.columnName ?? String(timeColumnMetadata.propertyKey);
+        const timeProperty = String(timeColumnMetadata.propertyKey);
+        const columnMetadata = entity.columns.find((col) => col.propertyName === timeProperty);
+
+        if (!columnMetadata) {
+          debug(`Warning: Time column property '${timeProperty}' not found in entity ${entity.tableName}`);
+          options.time_column = timeColumnMetadata.columnName ?? timeProperty;
+        } else {
+          options.time_column = columnMetadata.databaseName;
+          debug(`Using time column: ${options.time_column} for hypertable ${entity.tableName}`);
+        }
       }
+
       const hypertable = TimescaleDB.createHypertable(entity.tableName, options);
       const hypertableCheck = await dataSource.query(hypertable.inspect().build());
 
@@ -142,23 +152,18 @@ async function setupHypertables(dataSource: DataSource) {
         continue;
       }
 
-      // Allow redundant hypertables for now
-      if (hypertableCheck[0].is_hypertable) {
+      const isAlreadyHypertable = hypertableCheck[0].is_hypertable;
+
+      if (isAlreadyHypertable) {
         debug(`Hypertable for ${entity.tableName} already exists, applying settings only`);
-
-        // Apply hypertable settings (compression, policies, etc.) without recreating the hypertable
-        // This allows users to update hypertable configuration in migrations without recreating the table
-        await dataSource.query(hypertable.up().build(true));
-
-        const repository = dataSource.getRepository(entity.target);
-        Object.assign(repository, timescaleMethods);
-        continue;
+      } else {
+        debug(`Setting up hypertable for ${entity.tableName}`);
       }
 
-      debug(`Setting up hypertable for ${entity.tableName}`);
-
-      // Create new hypertable with all settings
-      await dataSource.query(hypertable.up().build(false));
+      // Створюємо/оновлюємо hypertable з усіма налаштуваннями
+      // isAlreadyHypertable = true: тільки compression/policies без create_hypertable
+      // isAlreadyHypertable = false: повне створення з create_hypertable
+      await dataSource.query(hypertable.up().build(isAlreadyHypertable));
 
       const repository = dataSource.getRepository(entity.target);
       Object.assign(repository, timescaleMethods);

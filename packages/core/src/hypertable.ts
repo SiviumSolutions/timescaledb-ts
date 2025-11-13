@@ -1,8 +1,4 @@
-import {
-  CreateHypertableOptions,
-  CreateHypertableOptionsSchema,
-  TimeBucketConfig,
-} from '@sivium/timescale-db-schemas';
+import { CreateHypertableOptions, CreateHypertableOptionsSchema, TimeBucketConfig } from '@sivium/timescale-db-schemas';
 import { HypertableErrors } from './errors';
 import { escapeIdentifier, escapeLiteral, validateIdentifier } from '@sivium/timescale-db-utils';
 import { CompressionBuilder } from './compression';
@@ -22,12 +18,14 @@ class HypertableUpBuilder {
   }
 
   public build(isHypertable: boolean = false): string {
-    debug(`Building up query for hypertable '${this.name}'`);
+    debug(`Building up query for hypertable '${this.name}' (isHypertable: ${isHypertable})`);
     const tableName = escapeIdentifier(this.name);
 
-    this.statements.push(
-      `SELECT create_hypertable(${escapeLiteral(this.name)}, by_range(${escapeLiteral(this.options.by_range.column_name)}), if_not_exists => true);`,
-    );
+    if (!isHypertable) {
+      this.statements.push(
+        `SELECT create_hypertable(${escapeLiteral(this.name)}, by_range(${escapeLiteral(this.options.by_range.column_name)}), if_not_exists => true);`,
+      );
+    }
 
     if (this.options.compression?.compress) {
       const orderBy = escapeIdentifier(this.options.compression.compress_orderby);
