@@ -111,10 +111,10 @@ importers:
   examples/node-sequelize:
     dependencies:
       '@sivium/timescale-db-core':
-        specifier: workspace:0.0.24
+        specifier: workspace:0.0.25
         version: link:../../packages/core
       '@sivium/timescale-db-schemas':
-        specifier: workspace:0.0.24
+        specifier: workspace:0.0.25
         version: link:../../packages/schemas
       express:
         specifier: ^4.18.2
@@ -145,13 +145,13 @@ importers:
   examples/node-typeorm:
     dependencies:
       '@sivium/timescale-db-core':
-        specifier: workspace:0.0.24
+        specifier: workspace:0.0.25
         version: link:../../packages/core
       '@sivium/timescale-db-schemas':
-        specifier: workspace:0.0.24
+        specifier: workspace:0.0.25
         version: link:../../packages/schemas
       '@sivium/timescale-db-typeorm':
-        specifier: workspace:0.0.24
+        specifier: workspace:0.0.25
         version: link:../../packages/typeorm
       express:
         specifier: ^4.18.2
@@ -170,10 +170,10 @@ importers:
   packages/core:
     dependencies:
       '@sivium/timescale-db-schemas':
-        specifier: workspace:^0.0.24
+        specifier: workspace:^0.0.25
         version: link:../schemas
       '@sivium/timescale-db-utils':
-        specifier: workspace:^0.0.24
+        specifier: workspace:^0.0.25
         version: link:../utils
 
   packages/schemas:
@@ -185,13 +185,13 @@ importers:
   packages/typeorm:
     dependencies:
       '@sivium/timescale-db-core':
-        specifier: workspace:^0.0.24
+        specifier: workspace:^0.0.25
         version: link:../core
       '@sivium/timescale-db-schemas':
-        specifier: workspace:^0.0.24
+        specifier: workspace:^0.0.25
         version: link:../schemas
       '@sivium/timescale-db-utils':
-        specifier: workspace:^0.0.24
+        specifier: workspace:^0.0.25
         version: link:../utils
       reflect-metadata:
         specifier: ^0.2.2
@@ -203,7 +203,7 @@ importers:
   packages/utils:
     dependencies:
       '@sivium/timescale-db-schemas':
-        specifier: workspace:^0.0.24
+        specifier: workspace:^0.0.25
         version: link:../schemas
       debug:
         specifier: ^4.4.0

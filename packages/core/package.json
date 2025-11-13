@@ -1,6 +1,6 @@
 {
   "name": "@sivium/timescale-db-core",
-  "version": "0.0.24",
+  "version": "0.0.25",
   "publishConfig": {
     "access": "public"
   },
@@ -48,8 +48,8 @@
     "test": "jest --runInBand"
   },
   "dependencies": {
-    "@sivium/timescale-db-schemas": "workspace:^0.0.24",
-    "@sivium/timescale-db-utils": "workspace:^0.0.24"
+    "@sivium/timescale-db-schemas": "workspace:^0.0.25",
+    "@sivium/timescale-db-utils": "workspace:^0.0.25"
   },
   "devDependencies": {}
 }
